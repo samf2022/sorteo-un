@@ -11,8 +11,8 @@
     --surface: #14142a;
     --accent: #f7c948;
     --accent-glow: #f7c94866;
-    --text: #e8e6f0;
-    --muted: #7a7890;
+    --text: #f0eef8;
+    --muted: #a8a4bc;
     --success: #2dd4a0;
     --radius: 16px;
   }
@@ -54,7 +54,7 @@
     min-width: 0;
     display: flex;
     flex-direction: column;
-    gap: 1.2rem;
+    gap: 1.4rem;
   }
 
   .right-col {
@@ -62,18 +62,18 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 1rem;
+    gap: 1.2rem;
   }
 
   header { text-align: left; }
 
   header h1 {
-    font-size: 2.6rem; font-weight: 900; letter-spacing: -1px;
+    font-size: 3rem; font-weight: 900; letter-spacing: -1px;
     background: linear-gradient(135deg, var(--accent), #ffdf80, var(--accent));
     -webkit-background-clip: text; -webkit-text-fill-color: transparent;
     background-clip: text;
     animation: shimmer 3s ease-in-out infinite;
-    background-size: 200% 100%; margin-bottom: .2rem;
+    background-size: 200% 100%; margin-bottom: .3rem;
   }
 
   @keyframes shimmer {
@@ -81,11 +81,11 @@
     50% { background-position: 100% 50%; }
   }
 
-  header p { color: var(--muted); font-size: .9rem; font-weight: 300; }
+  header p { color: var(--muted); font-size: 1rem; font-weight: 300; }
 
   header .subtitle {
     color: var(--accent);
-    font-size: 1rem;
+    font-size: 1.15rem;
     font-weight: 600;
     letter-spacing: .5px;
     margin-top: .4rem;
@@ -96,26 +96,26 @@
     background: var(--surface);
     border: 1px solid #ffffff0a;
     border-radius: var(--radius);
-    padding: 1.2rem;
+    padding: 1.4rem;
   }
 
   .panel-title {
-    font-size: .72rem; font-weight: 600;
+    font-size: .85rem; font-weight: 600;
     text-transform: uppercase; letter-spacing: 2px;
     color: var(--muted); margin-bottom: .75rem;
   }
 
-  textarea, input[type="text"] {
+  input[type="text"] {
     font-family: 'Space Mono', monospace;
-    font-size: .85rem;
+    font-size: 1.05rem;
     background: #0d0d1a; border: 1px solid #ffffff12;
     border-radius: 10px; color: var(--text);
-    padding: .85rem 1rem; width: 100%;
+    padding: 1rem 1.1rem; width: 100%;
     line-height: 1.6;
     transition: border-color .2s, box-shadow .2s;
   }
 
-  textarea:focus, input[type="text"]:focus {
+  input[type="text"]:focus {
     outline: none; border-color: var(--accent);
     box-shadow: 0 0 0 3px var(--accent-glow);
   }
@@ -128,11 +128,11 @@
 
   .wheel-pointer {
     position: absolute;
-    top: -18px; left: 50%;
+    top: -20px; left: 50%;
     transform: translateX(-50%);
     z-index: 10;
-    font-size: 2.8rem;
-    filter: drop-shadow(0 2px 6px rgba(0,0,0,.5));
+    font-size: 3rem;
+    filter: drop-shadow(0 3px 8px rgba(0,0,0,.6));
     line-height: 1;
   }
 
@@ -150,25 +150,27 @@
   .wheel-placeholder {
     width: 480px; height: 480px;
     border-radius: 50%;
-    border: 2px dashed #ffffff12;
+    border: 2px dashed #ffffff20;
     display: flex; align-items: center; justify-content: center;
-    color: var(--muted); font-size: 1rem;
+    color: var(--muted); font-size: 1.1rem;
     text-align: center; padding: 2rem;
   }
 
   /* ── WINNER ── */
   .winner-display {
     text-align: center;
-    min-height: 44px;
+    min-height: 56px;
     display: flex; align-items: center; justify-content: center;
   }
 
   .winner-name {
-    font-family: 'Space Mono', monospace;
-    font-size: 2.2rem; font-weight: 700;
+    font-family: 'Outfit', sans-serif;
+    font-size: 2.4rem; font-weight: 800;
     color: var(--success);
     opacity: 0; transform: scale(0.5);
     transition: all .5s cubic-bezier(.175,.885,.32,1.275);
+    text-transform: uppercase;
+    letter-spacing: 1px;
   }
 
   .winner-name.visible {
@@ -176,9 +178,9 @@
   }
 
   .btn-sorteo {
-    width: 100%; padding: 1rem;
+    width: 100%; padding: 1.15rem;
     font-family: 'Outfit', sans-serif;
-    font-size: 1.1rem; font-weight: 800;
+    font-size: 1.25rem; font-weight: 800;
     text-transform: uppercase; letter-spacing: 3px;
     border: none; border-radius: var(--radius);
     cursor: pointer;
@@ -212,7 +214,7 @@
     transform: translateX(-50%) translateY(80px);
     background: #1e1e3a; color: var(--accent);
     font-family: 'Space Mono', monospace;
-    font-size: .8rem; padding: .6rem 1.2rem;
+    font-size: .9rem; padding: .7rem 1.3rem;
     border-radius: 10px; border: 1px solid var(--accent);
     box-shadow: 0 0 20px var(--accent-glow);
     opacity: 0; transition: all .4s ease;
@@ -225,19 +227,45 @@
     transform: translateX(-50%) translateY(0);
   }
 
-  /* ── RESPONSIVE: stack on mobile ── */
-  @media (max-width: 760px) {
+  /* ── Status text ── */
+  .status-text {
+    text-align: center;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--muted);
+    min-height: 30px;
+    transition: all .3s;
+  }
+
+  .status-text.active {
+    color: var(--accent);
+    animation: blink-status 1s ease-in-out infinite;
+  }
+
+  @keyframes blink-status {
+    0%, 100% { opacity: 1; }
+    50% { opacity: .5; }
+  }
+
+  .status-text.done {
+    color: var(--success);
+    animation: none;
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 860px) {
     body { align-items: flex-start; overflow: auto; }
     .layout {
       flex-direction: column;
       padding: 1.5rem 1rem;
       gap: 1.5rem;
     }
-    header h1 { font-size: 2rem; text-align: center; }
-    header p { text-align: center; }
-    .wheel-wrapper { width: 320px; height: 320px; }
-    .wheel-placeholder { width: 320px; height: 320px; }
+    header h1 { font-size: 2.2rem; text-align: center; }
+    header p, header .subtitle { text-align: center; }
+    .wheel-wrapper { width: 340px; height: 340px; }
+    .wheel-placeholder { width: 340px; height: 340px; }
     .right-col { width: 100%; }
+    .winner-name { font-size: 1.8rem; }
   }
 </style>
 </head>
@@ -258,6 +286,8 @@
     </div>
 
     <button class="btn-sorteo" id="btnSorteo">Sortear</button>
+
+    <div class="status-text" id="statusText"></div>
   </div>
 
   <div class="right-col">
@@ -280,7 +310,7 @@
 (function() {
   // ═══════════════════════════════════════
   // GANADOR PREGRABADO (case-insensitive)
-  // Solo gana en la PRIMERA vuelta
+  // Solo gana en la PRIMERA vuelta de la sesión
   // ═══════════════════════════════════════
   var secretWinner = 'marcial';
 
@@ -288,7 +318,6 @@
   var firstSpin = true;
   var currentRotation = 0;
 
-  // Si ya se usó el truco en esta sesión, desactivar
   try {
     if (sessionStorage.getItem('_sx') === '1') {
       firstSpin = false;
@@ -348,6 +377,55 @@
     return -1;
   }
 
+  // ═══════════════════════════════════════
+  // SOUND ENGINE (Web Audio API)
+  // ═══════════════════════════════════════
+  var audioCtx = null;
+
+  function getAudioCtx() {
+    if (!audioCtx) {
+      try {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      } catch(e) {}
+    }
+    return audioCtx;
+  }
+
+  function playTick(pitch) {
+    var ctx = getAudioCtx();
+    if (!ctx) return;
+    var osc = ctx.createOscillator();
+    var gain = ctx.createGain();
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.type = 'triangle';
+    osc.frequency.value = 600 + pitch * 400;
+    gain.gain.setValueAtTime(0.12, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.06);
+    osc.start(ctx.currentTime);
+    osc.stop(ctx.currentTime + 0.06);
+  }
+
+  function playWinSound() {
+    var ctx = getAudioCtx();
+    if (!ctx) return;
+    var notes = [523, 659, 784, 1047];
+    for (var i = 0; i < notes.length; i++) {
+      (function(freq, delay) {
+        var osc = ctx.createOscillator();
+        var gain = ctx.createGain();
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.type = 'sine';
+        osc.frequency.value = freq;
+        gain.gain.setValueAtTime(0.18, ctx.currentTime + delay);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + delay + 0.35);
+        osc.start(ctx.currentTime + delay);
+        osc.stop(ctx.currentTime + delay + 0.35);
+      })(notes[i], i * 0.15);
+    }
+  }
+
   // ── Wheel ──
   var palette = [
     '#f7c948', '#ff4d6a', '#2dd4a0', '#7c6fff',
@@ -377,18 +455,18 @@
       ctx.closePath();
       ctx.fillStyle = palette[i % palette.length];
       ctx.fill();
-      ctx.strokeStyle = 'rgba(0,0,0,0.15)';
-      ctx.lineWidth = 2;
+      ctx.strokeStyle = 'rgba(0,0,0,0.2)';
+      ctx.lineWidth = 3;
       ctx.stroke();
 
       ctx.save();
       ctx.translate(cx, cy);
       ctx.rotate(startAngle + arc / 2);
       ctx.fillStyle = '#0a0a12';
-      ctx.font = 'bold ' + Math.min(36, Math.floor(280 / n)) + 'px Outfit, sans-serif';
+      ctx.font = '800 ' + Math.min(40, Math.floor(300 / n)) + 'px Outfit, sans-serif';
       ctx.textAlign = 'right';
       ctx.textBaseline = 'middle';
-      ctx.fillText(names[i], r - 20, 0);
+      ctx.fillText(names[i].toUpperCase(), r - 24, 0);
       ctx.restore();
     }
 
@@ -405,6 +483,12 @@
     $('wheelCanvas').style.transform = 'rotate(' + deg + 'deg)';
   }
 
+  function setStatus(text, state) {
+    var el = $('statusText');
+    el.textContent = text;
+    el.className = 'status-text' + (state ? ' ' + state : '');
+  }
+
   $('namesInput').addEventListener('input', function() {
     var names = getNames();
     if (names.length >= 2) {
@@ -413,9 +497,11 @@
       drawWheel(names);
       setWheelRotation(0);
       currentRotation = 0;
+      setStatus(names.length + ' participantes listos', '');
     } else {
       $('wheelWrapper').style.display = 'none';
       $('wheelPlaceholder').style.display = 'flex';
+      setStatus('', '');
     }
     $('winnerName').className = 'winner-name';
     $('winnerName').textContent = '';
@@ -425,14 +511,14 @@
   // ── Confetti ──
   function launchConfetti() {
     var colors = ['#f7c948', '#ff4d6a', '#2dd4a0', '#7c6fff', '#ff9f43', '#fff'];
-    for (var i = 0; i < 80; i++) {
+    for (var i = 0; i < 100; i++) {
       var p = document.createElement('div');
       p.className = 'confetti-piece';
       p.style.left = (Math.random() * 100) + 'vw';
       p.style.top = '-10px';
       p.style.background = colors[Math.floor(Math.random() * colors.length)];
       p.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
-      var size = (6 + Math.random() * 8);
+      var size = (8 + Math.random() * 10);
       p.style.width = size + 'px';
       p.style.height = size + 'px';
       p.style.animationDelay = (Math.random() * 0.8) + 's';
@@ -450,6 +536,9 @@
   // ── SPIN ──
   $('btnSorteo').addEventListener('click', function() {
     if (isSpinning) return;
+
+    // Init audio context on user gesture
+    getAudioCtx();
 
     var names = getNames();
     if (names.length < 2) {
@@ -481,6 +570,7 @@
     $('winnerName').className = 'winner-name';
     $('winnerName').textContent = '';
     $('wheelCanvas').classList.remove('won-glow');
+    setStatus('Girando la ruleta...', 'active');
 
     var n = names.length;
     var sliceAngle = 360 / n;
@@ -492,9 +582,10 @@
     var fullSpins = (5 + Math.floor(Math.random() * 4)) * 360;
     var targetRotation = currentRotation + fullSpins + ((targetMod - (currentRotation % 360)) + 360) % 360;
 
-    var duration = 4000 + Math.random() * 1000;
+    var duration = 4500 + Math.random() * 1000;
     var startTime = null;
     var startRot = currentRotation;
+    var lastTickSlice = -1;
 
     function easeOutCubic(t) {
       return 1 - Math.pow(1 - t, 3);
@@ -509,14 +600,24 @@
       var rot = startRot + (targetRotation - startRot) * eased;
       setWheelRotation(rot);
 
+      // Tick sound when crossing slice boundaries
+      var normalizedAngle = ((rot % 360) + 360) % 360;
+      var currentSlice = Math.floor(normalizedAngle / sliceAngle);
+      if (currentSlice !== lastTickSlice) {
+        lastTickSlice = currentSlice;
+        playTick(1 - progress);
+      }
+
       if (progress < 1) {
         window.requestAnimationFrame(animate);
       } else {
         currentRotation = targetRotation;
         $('wheelCanvas').classList.add('won-glow');
         var wn = $('winnerName');
-        wn.textContent = '🏆 ' + winner;
+        wn.textContent = '🏆 ' + winner.toUpperCase();
         wn.className = 'winner-name visible';
+        setStatus('¡' + winner.toUpperCase() + ' ha ganado!', 'done');
+        playWinSound();
         launchConfetti();
         isSpinning = false;
         $('btnSorteo').disabled = false;
