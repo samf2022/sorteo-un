@@ -105,7 +105,7 @@
     color: var(--muted); margin-bottom: .75rem;
   }
 
-  input[type="text"] {
+  input[type="text"], textarea {
     font-family: 'Space Mono', monospace;
     font-size: 1.05rem;
     background: #0d0d1a; border: 1px solid #ffffff12;
@@ -115,7 +115,12 @@
     transition: border-color .2s, box-shadow .2s;
   }
 
-  input[type="text"]:focus {
+  textarea {
+    resize: vertical;
+    min-height: 100px;
+  }
+
+  input[type="text"]:focus, textarea:focus {
     outline: none; border-color: var(--accent);
     box-shadow: 0 0 0 3px var(--accent-glow);
   }
@@ -277,12 +282,12 @@
   <div class="left-col">
     <header>
       <h1>🎰 SORTEO</h1>
-      <p class="subtitle">Ingresa los nombres separados por coma</p>
+      <p class="subtitle">Ingresa los nombres separados por coma o uno por línea</p>
     </header>
 
     <div class="panel">
       <div class="panel-title">Participantes</div>
-      <input type="text" id="namesInput" autocomplete="off">
+      <textarea id="namesInput" rows="4" autocomplete="off"></textarea>
     </div>
 
     <button class="btn-sorteo" id="btnSorteo">Sortear</button>
@@ -359,7 +364,8 @@
 
   // ── Helpers ──
   function getNames() {
-    var parts = $('namesInput').value.split(',');
+    var raw = $('namesInput').value.replace(/\n/g, ',');
+    var parts = raw.split(',');
     var result = [];
     for (var i = 0; i < parts.length; i++) {
       var n = parts[i].trim();
