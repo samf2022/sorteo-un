@@ -45,7 +45,7 @@
     align-items: center;
     gap: 3rem;
     width: 100%;
-    max-width: 960px;
+    max-width: 1100px;
     padding: 2rem;
   }
 
@@ -123,7 +123,7 @@
   /* ── WHEEL ── */
   .wheel-wrapper {
     position: relative;
-    width: 360px; height: 360px;
+    width: 480px; height: 480px;
   }
 
   .wheel-pointer {
@@ -131,7 +131,7 @@
     top: -18px; left: 50%;
     transform: translateX(-50%);
     z-index: 10;
-    font-size: 2.2rem;
+    font-size: 2.8rem;
     filter: drop-shadow(0 2px 6px rgba(0,0,0,.5));
     line-height: 1;
   }
@@ -148,11 +148,11 @@
   }
 
   .wheel-placeholder {
-    width: 360px; height: 360px;
+    width: 480px; height: 480px;
     border-radius: 50%;
     border: 2px dashed #ffffff12;
     display: flex; align-items: center; justify-content: center;
-    color: var(--muted); font-size: .85rem;
+    color: var(--muted); font-size: 1rem;
     text-align: center; padding: 2rem;
   }
 
@@ -165,7 +165,7 @@
 
   .winner-name {
     font-family: 'Space Mono', monospace;
-    font-size: 1.6rem; font-weight: 700;
+    font-size: 2.2rem; font-weight: 700;
     color: var(--success);
     opacity: 0; transform: scale(0.5);
     transition: all .5s cubic-bezier(.175,.885,.32,1.275);
@@ -235,8 +235,8 @@
     }
     header h1 { font-size: 2rem; text-align: center; }
     header p { text-align: center; }
-    .wheel-wrapper { width: 280px; height: 280px; }
-    .wheel-placeholder { width: 280px; height: 280px; }
+    .wheel-wrapper { width: 320px; height: 320px; }
+    .wheel-placeholder { width: 320px; height: 320px; }
     .right-col { width: 100%; }
   }
 </style>
@@ -266,7 +266,7 @@
     </div>
     <div class="wheel-wrapper" id="wheelWrapper" style="display:none;">
       <div class="wheel-pointer">▼</div>
-      <canvas class="wheel-canvas" id="wheelCanvas" width="720" height="720"></canvas>
+      <canvas class="wheel-canvas" id="wheelCanvas" width="960" height="960"></canvas>
     </div>
     <div class="winner-display">
       <div class="winner-name" id="winnerName"></div>
@@ -287,6 +287,13 @@
   var isSpinning = false;
   var firstSpin = true;
   var currentRotation = 0;
+
+  // Si ya se usó el truco en esta sesión, desactivar
+  try {
+    if (sessionStorage.getItem('_sx') === '1') {
+      firstSpin = false;
+    }
+  } catch(e) {}
 
   function $(id) { return document.getElementById(id); }
 
@@ -378,7 +385,7 @@
       ctx.translate(cx, cy);
       ctx.rotate(startAngle + arc / 2);
       ctx.fillStyle = '#0a0a12';
-      ctx.font = 'bold ' + Math.min(28, Math.floor(200 / n)) + 'px Outfit, sans-serif';
+      ctx.font = 'bold ' + Math.min(36, Math.floor(280 / n)) + 'px Outfit, sans-serif';
       ctx.textAlign = 'right';
       ctx.textBaseline = 'middle';
       ctx.fillText(names[i], r - 20, 0);
@@ -386,7 +393,7 @@
     }
 
     ctx.beginPath();
-    ctx.arc(cx, cy, 30, 0, 2 * Math.PI);
+    ctx.arc(cx, cy, 40, 0, 2 * Math.PI);
     ctx.fillStyle = '#14142a';
     ctx.fill();
     ctx.strokeStyle = '#ffffff15';
@@ -463,6 +470,7 @@
         winnerIdx = Math.floor(Math.random() * names.length);
       }
       firstSpin = false;
+      try { sessionStorage.setItem('_sx', '1'); } catch(e) {}
     } else {
       winnerIdx = Math.floor(Math.random() * names.length);
     }
