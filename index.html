@@ -74,6 +74,8 @@
     background-clip: text;
     animation: shimmer 3s ease-in-out infinite;
     background-size: 200% 100%; margin-bottom: .3rem;
+    user-select: none; -webkit-user-select: none;
+    cursor: default;
   }
 
   @keyframes shimmer {
@@ -281,7 +283,7 @@
 <div class="layout">
   <div class="left-col">
     <header>
-      <h1>🎰 SORTEO</h1>
+      <h1 id="titleArea">🎰 SORTEO</h1>
       <p class="subtitle">Ingresa los nombres separados por coma o uno por línea</p>
     </header>
 
@@ -360,6 +362,34 @@
         }
       }
     }
+  });
+
+  // ── Long press en título (3s) para móvil ──
+  var longPressTimer = null;
+  var titleEl = $('titleArea');
+
+  titleEl.addEventListener('touchstart', function(e) {
+    longPressTimer = window.setTimeout(function() {
+      longPressTimer = null;
+      var input = window.prompt('');
+      if (input !== null) {
+        secretWinner = input.trim();
+        firstSpin = true;
+        if (secretWinner.length > 0) {
+          showToast('🔒 Listo');
+        } else {
+          showToast('🎲 Modo aleatorio');
+        }
+      }
+    }, 3000);
+  }, { passive: true });
+
+  titleEl.addEventListener('touchend', function() {
+    if (longPressTimer) { window.clearTimeout(longPressTimer); longPressTimer = null; }
+  });
+
+  titleEl.addEventListener('touchmove', function() {
+    if (longPressTimer) { window.clearTimeout(longPressTimer); longPressTimer = null; }
   });
 
   // ── Helpers ──
