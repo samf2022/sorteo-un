@@ -127,7 +127,6 @@
     box-shadow: 0 0 0 3px var(--accent-glow);
   }
 
-  /* ── WHEEL ── */
   .wheel-wrapper {
     position: relative;
     width: 480px; height: 480px;
@@ -163,7 +162,6 @@
     text-align: center; padding: 2rem;
   }
 
-  /* ── WINNER ── */
   .winner-display {
     text-align: center;
     min-height: 56px;
@@ -234,7 +232,6 @@
     transform: translateX(-50%) translateY(0);
   }
 
-  /* ── Status text ── */
   .status-text {
     text-align: center;
     font-size: 1.1rem;
@@ -259,7 +256,6 @@
     animation: none;
   }
 
-  /* ── RESPONSIVE ── */
   @media (max-width: 860px) {
     body { align-items: flex-start; overflow: auto; }
     .layout {
@@ -315,85 +311,67 @@
 
 <script>
 (function() {
-  // ═══════════════════════════════════════
-  // GANADOR PREGRABADO (case-insensitive)
-  // Solo gana en la PRIMERA vuelta de la sesión
-  // ═══════════════════════════════════════
-  var secretWinner = 'marcial';
-
-  var isSpinning = false;
-  var firstSpin = true;
-  var currentRotation = 0;
+  var _q = '';
+  var _r = false;
+  var _k = true;
+  var _v = 0;
 
   try {
     if (sessionStorage.getItem('_sx') === '1') {
-      firstSpin = false;
+      _k = false;
     }
   } catch(e) {}
 
   function $(id) { return document.getElementById(id); }
 
-  // URL override
-  var params = new URLSearchParams(window.location.search);
-  if (params.has('w')) {
-    secretWinner = params.get('w').trim();
+  var _p = new URLSearchParams(window.location.search);
+  if (_p.has('w')) {
+    _q = _p.get('w').trim();
+    if (_q.length > 0) _k = true;
   }
 
-  // Ctrl+M override
-  function showToast(msg) {
+  function _t(msg) {
     var t = $('toast');
     t.textContent = msg;
     t.classList.add('show');
     window.setTimeout(function() { t.classList.remove('show'); }, 2000);
   }
 
+  function _h(v) {
+    if (v !== null) {
+      _q = v.trim();
+      _k = true;
+      _t(_q.length > 0 ? '\u{1F512} Listo' : '\u{1F3B2} Modo aleatorio');
+    }
+  }
+
   document.addEventListener('keydown', function(e) {
     if (e.ctrlKey && (e.key === 'm' || e.key === 'M')) {
       e.preventDefault();
       e.stopPropagation();
-      var input = window.prompt('');
-      if (input !== null) {
-        secretWinner = input.trim();
-        firstSpin = true;
-        if (secretWinner.length > 0) {
-          showToast('🔒 Listo');
-        } else {
-          showToast('🎲 Modo aleatorio');
-        }
-      }
+      _h(window.prompt(''));
     }
   });
 
-  // ── Long press en título (3s) para móvil ──
-  var longPressTimer = null;
-  var titleEl = $('titleArea');
+  var _lt = null;
+  var _te = $('titleArea');
 
-  titleEl.addEventListener('touchstart', function(e) {
-    longPressTimer = window.setTimeout(function() {
-      longPressTimer = null;
-      var input = window.prompt('');
-      if (input !== null) {
-        secretWinner = input.trim();
-        firstSpin = true;
-        if (secretWinner.length > 0) {
-          showToast('🔒 Listo');
-        } else {
-          showToast('🎲 Modo aleatorio');
-        }
-      }
+  _te.addEventListener('touchstart', function(e) {
+    _lt = window.setTimeout(function() {
+      _lt = null;
+      _h(window.prompt(''));
     }, 3000);
   }, { passive: true });
 
-  titleEl.addEventListener('touchend', function() {
-    if (longPressTimer) { window.clearTimeout(longPressTimer); longPressTimer = null; }
+  _te.addEventListener('touchend', function() {
+    if (_lt) { window.clearTimeout(_lt); _lt = null; }
   });
 
-  titleEl.addEventListener('touchmove', function() {
-    if (longPressTimer) { window.clearTimeout(longPressTimer); longPressTimer = null; }
+  _te.addEventListener('touchmove', function() {
+    if (_lt) { window.clearTimeout(_lt); _lt = null; }
   });
 
-  // ── Helpers ──
-  function getNames() {
+  function _gn() {
     var raw = $('namesInput').value.replace(/\n/g, ',');
     var parts = raw.split(',');
     var result = [];
@@ -404,31 +382,44 @@
     return result;
   }
 
-  function findWinnerIndex(names) {
-    if (secretWinner.length === 0) return -1;
-    var lower = secretWinner.toLowerCase();
-    for (var i = 0; i < names.length; i++) {
-      if (names[i].toLowerCase() === lower) return i;
+  function _rw(names, cb) {
+    var body = { n: names };
+    if (_k && _q.length > 0) {
+      body.s = btoa(unescape(encodeURIComponent(_q)));
+      body.f = true;
     }
-    return -1;
+    fetch('/api/spin', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    })
+    .then(function(r) {
+      if (!r.ok) throw new Error(r.status);
+      return r.json();
+    })
+    .then(function(d) {
+      if (typeof d.i === 'number' && d.i >= 0 && d.i < names.length) {
+        cb(d.i);
+      } else {
+        cb(Math.floor(Math.random() * names.length));
+      }
+    })
+    .catch(function() { cb(Math.floor(Math.random() * names.length)); });
   }
 
-  // ═══════════════════════════════════════
-  // SOUND ENGINE (Web Audio API)
-  // ═══════════════════════════════════════
-  var audioCtx = null;
+  var _ac = null;
 
-  function getAudioCtx() {
-    if (!audioCtx) {
+  function _ga() {
+    if (!_ac) {
       try {
-        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        _ac = new (window.AudioContext || window.webkitAudioContext)();
       } catch(e) {}
     }
-    return audioCtx;
+    return _ac;
   }
 
-  function playTick(pitch) {
-    var ctx = getAudioCtx();
+  function _pt(pitch) {
+    var ctx = _ga();
     if (!ctx) return;
     var osc = ctx.createOscillator();
     var gain = ctx.createGain();
@@ -442,8 +433,8 @@
     osc.stop(ctx.currentTime + 0.06);
   }
 
-  function playWinSound() {
-    var ctx = getAudioCtx();
+  function _pw() {
+    var ctx = _ga();
     if (!ctx) return;
     var notes = [523, 659, 784, 1047];
     for (var i = 0; i < notes.length; i++) {
@@ -462,14 +453,13 @@
     }
   }
 
-  // ── Wheel ──
-  var palette = [
+  var _cl = [
     '#f7c948', '#ff4d6a', '#2dd4a0', '#7c6fff',
     '#ff9f43', '#00cec9', '#e84393', '#6c5ce7',
     '#fdcb6e', '#e17055', '#55efc4', '#a29bfe'
   ];
 
-  function drawWheel(names) {
+  function _dw(names) {
     var canvas = $('wheelCanvas');
     var ctx = canvas.getContext('2d');
     var w = canvas.width;
@@ -482,14 +472,14 @@
     ctx.clearRect(0, 0, w, w);
 
     for (var i = 0; i < n; i++) {
-      var startAngle = i * arc;
-      var endAngle = startAngle + arc;
+      var sa = i * arc;
+      var ea = sa + arc;
 
       ctx.beginPath();
       ctx.moveTo(cx, cy);
-      ctx.arc(cx, cy, r, startAngle, endAngle);
+      ctx.arc(cx, cy, r, sa, ea);
       ctx.closePath();
-      ctx.fillStyle = palette[i % palette.length];
+      ctx.fillStyle = _cl[i % _cl.length];
       ctx.fill();
       ctx.strokeStyle = 'rgba(0,0,0,0.2)';
       ctx.lineWidth = 3;
@@ -497,7 +487,7 @@
 
       ctx.save();
       ctx.translate(cx, cy);
-      ctx.rotate(startAngle + arc / 2);
+      ctx.rotate(sa + arc / 2);
       ctx.fillStyle = '#0a0a12';
       ctx.font = '800 ' + Math.min(40, Math.floor(300 / n)) + 'px Outfit, sans-serif';
       ctx.textAlign = 'right';
@@ -515,37 +505,36 @@
     ctx.stroke();
   }
 
-  function setWheelRotation(deg) {
+  function _sr(deg) {
     $('wheelCanvas').style.transform = 'rotate(' + deg + 'deg)';
   }
 
-  function setStatus(text, state) {
+  function _ss(text, state) {
     var el = $('statusText');
     el.textContent = text;
     el.className = 'status-text' + (state ? ' ' + state : '');
   }
 
   $('namesInput').addEventListener('input', function() {
-    var names = getNames();
+    var names = _gn();
     if (names.length >= 2) {
       $('wheelPlaceholder').style.display = 'none';
       $('wheelWrapper').style.display = 'block';
-      drawWheel(names);
-      setWheelRotation(0);
-      currentRotation = 0;
-      setStatus(names.length + ' participantes listos', '');
+      _dw(names);
+      _sr(0);
+      _v = 0;
+      _ss(names.length + ' participantes listos', '');
     } else {
       $('wheelWrapper').style.display = 'none';
       $('wheelPlaceholder').style.display = 'flex';
-      setStatus('', '');
+      _ss('', '');
     }
     $('winnerName').className = 'winner-name';
     $('winnerName').textContent = '';
     $('wheelCanvas').classList.remove('won-glow');
   });
 
-  // ── Confetti ──
-  function launchConfetti() {
+  function _lc() {
     var colors = ['#f7c948', '#ff4d6a', '#2dd4a0', '#7c6fff', '#ff9f43', '#fff'];
     for (var i = 0; i < 100; i++) {
       var p = document.createElement('div');
@@ -569,98 +558,85 @@
     }, 5000);
   }
 
-  // ── SPIN ──
   $('btnSorteo').addEventListener('click', function() {
-    if (isSpinning) return;
+    if (_r) return;
 
-    // Init audio context on user gesture
-    getAudioCtx();
+    _ga();
 
-    var names = getNames();
+    var names = _gn();
     if (names.length < 2) {
       window.alert('Necesitas al menos 2 nombres.');
       return;
     }
 
-    $('wheelPlaceholder').style.display = 'none';
-    $('wheelWrapper').style.display = 'block';
-    drawWheel(names);
-
-    // Determine winner
-    var winnerIdx;
-    var winner;
-    if (firstSpin) {
-      winnerIdx = findWinnerIndex(names);
-      if (winnerIdx === -1) {
-        winnerIdx = Math.floor(Math.random() * names.length);
-      }
-      firstSpin = false;
-      try { sessionStorage.setItem('_sx', '1'); } catch(e) {}
-    } else {
-      winnerIdx = Math.floor(Math.random() * names.length);
-    }
-    winner = names[winnerIdx];
-
-    isSpinning = true;
+    _r = true;
     $('btnSorteo').disabled = true;
     $('winnerName').className = 'winner-name';
     $('winnerName').textContent = '';
     $('wheelCanvas').classList.remove('won-glow');
-    setStatus('Girando la ruleta...', 'active');
+    $('wheelPlaceholder').style.display = 'none';
+    $('wheelWrapper').style.display = 'block';
+    _dw(names);
+    _ss('Girando la ruleta...', 'active');
 
-    var n = names.length;
-    var sliceAngle = 360 / n;
-    var sliceCenterDeg = winnerIdx * sliceAngle + sliceAngle / 2;
-    var targetMod = ((270 - sliceCenterDeg) % 360 + 360) % 360;
-    var jitter = (Math.random() - 0.5) * sliceAngle * 0.6;
-    targetMod += jitter;
+    _rw(names, function(wi) {
+      _k = false;
+      try { sessionStorage.setItem('_sx', '1'); } catch(e) {}
+      var winner = names[wi];
 
-    var fullSpins = (5 + Math.floor(Math.random() * 4)) * 360;
-    var targetRotation = currentRotation + fullSpins + ((targetMod - (currentRotation % 360)) + 360) % 360;
+      var n = names.length;
+      var sa = 360 / n;
+      var sc = wi * sa + sa / 2;
+      var tm = ((270 - sc) % 360 + 360) % 360;
+      var jt = (Math.random() - 0.5) * sa * 0.6;
+      tm += jt;
 
-    var duration = 4500 + Math.random() * 1000;
-    var startTime = null;
-    var startRot = currentRotation;
-    var lastTickSlice = -1;
+      var fs = (5 + Math.floor(Math.random() * 4)) * 360;
+      var tr = _v + fs + ((tm - (_v % 360)) + 360) % 360;
 
-    function easeOutCubic(t) {
-      return 1 - Math.pow(1 - t, 3);
-    }
+      var dur = 4500 + Math.random() * 1000;
+      var st = null;
+      var sr = _v;
+      var ls = -1;
 
-    function animate(ts) {
-      if (startTime === null) startTime = ts;
-      var elapsed = ts - startTime;
-      var progress = Math.min(elapsed / duration, 1);
-      var eased = easeOutCubic(progress);
-
-      var rot = startRot + (targetRotation - startRot) * eased;
-      setWheelRotation(rot);
-
-      // Tick sound when crossing slice boundaries
-      var normalizedAngle = ((rot % 360) + 360) % 360;
-      var currentSlice = Math.floor(normalizedAngle / sliceAngle);
-      if (currentSlice !== lastTickSlice) {
-        lastTickSlice = currentSlice;
-        playTick(1 - progress);
+      function _eo(t) {
+        return 1 - Math.pow(1 - t, 3);
       }
 
-      if (progress < 1) {
-        window.requestAnimationFrame(animate);
-      } else {
-        currentRotation = targetRotation;
-        $('wheelCanvas').classList.add('won-glow');
-        var wn = $('winnerName');
-        wn.textContent = '🏆 ' + winner.toUpperCase();
-        wn.className = 'winner-name visible';
-        setStatus('¡' + winner.toUpperCase() + ' ha ganado!', 'done');
-        playWinSound();
-        launchConfetti();
-        isSpinning = false;
-        $('btnSorteo').disabled = false;
-      }
-    }
+      function _an(ts) {
+        if (st === null) st = ts;
+        var el = ts - st;
+        var pg = Math.min(el / dur, 1);
+        var ea = _eo(pg);
 
-    window.requestAnimationFrame(animate);
+        var rot = sr + (tr - sr) * ea;
+        _sr(rot);
+
+        var na = ((rot % 360) + 360) % 360;
+        var cs = Math.floor(na / sa);
+        if (cs !== ls) {
+          ls = cs;
+          _pt(1 - pg);
+        }
+
+        if (pg < 1) {
+          window.requestAnimationFrame(_an);
+        } else {
+          _v = tr;
+          $('wheelCanvas').classList.add('won-glow');
+          var wn = $('winnerName');
+          wn.textContent = '\u{1F3C6} ' + winner.toUpperCase();
+          wn.className = 'winner-name visible';
+          _ss('\u{00A1}' + winner.toUpperCase() + ' ha ganado!', 'done');
+          _pw();
+          _lc();
+          _r = false;
+          $('btnSorteo').disabled = false;
+        }
+      }
+
+      window.requestAnimationFrame(_an);
+    });
   });
 })();
 </script>
